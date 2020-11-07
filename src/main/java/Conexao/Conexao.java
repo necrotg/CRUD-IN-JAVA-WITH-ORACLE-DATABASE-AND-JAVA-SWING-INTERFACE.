@@ -5,7 +5,6 @@
  */
 package Conexao;
 
-import View.LoginView;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,7 +16,6 @@ public class Conexao {
     private final static String BANCO = "jdbc:oracle:thin:@localhost:1521:XE";
     private final static String USUARIO = "trab";
     private final static String SENHA = "123";
-    LoginView login = new LoginView();
 
     private static Connection conexao;
 

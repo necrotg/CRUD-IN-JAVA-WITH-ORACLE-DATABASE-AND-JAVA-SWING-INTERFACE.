@@ -1,16 +1,18 @@
 package Principal;
 import Conexao.Conexao;
-import View.LoginView;
 import View.UserView;
 
 
 
 public class Main {
     
-    LoginView loginview;
+    Conexao objconexao;
+    UserView usuarioview;
+        
 
     public Main() {
-        loginview = new LoginView();
+        objconexao = new Conexao();
+        usuarioview = new UserView();
         
     }
 
