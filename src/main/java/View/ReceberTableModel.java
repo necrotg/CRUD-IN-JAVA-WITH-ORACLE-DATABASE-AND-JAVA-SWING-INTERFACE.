@@ -59,6 +59,10 @@ public class ReceberTableModel extends AbstractTableModel {
                 return receber.getFINAN_TOTAL();
             case 10:
                 return receber.getNOTA_FISCAL();
+            case 11:
+                return receber.getCliente().getCLI_ID();
+            case 12:
+                return receber.getCliente().getCLI_NOME();
             default:
                 return null;
         }

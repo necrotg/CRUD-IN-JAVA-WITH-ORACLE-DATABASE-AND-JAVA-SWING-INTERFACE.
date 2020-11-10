@@ -1,6 +1,7 @@
 package DAO;
 
 import Conexao.Conexao;
+import Model.ClienteModel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -68,27 +69,31 @@ public class ReceberDAO {
         ArrayList<ReceberModel> lista = null;
         PreparedStatement stm;
         ResultSet rs;
-        String sql = "SELECT * FROM FINANCEIRO INNER JOIN RECEBER ON FINANCEIRO.FINAN_ID = RECEBER.FINAN_ID";
+        String sql = "SELECT FINANCEIRO.FINAN_ID , FINAN_NUM , FINAN_EMISSAO , FINAN_VENC, FINAN_PAG, FINAN_VAL, FINAN_JUROS ,FINAN_MULTA,FINAN_DESCONTO, FINAN_TOTAL,NOTA_FISCAL ,CLIENTE.CLI_ID,CLIENTE.CLI_NOME FROM FINANCEIRO, CLIENTE, RECEBER WHERE FINANCEIRO.FINAN_ID = RECEBER.FINAN_ID AND RECEBER.CLI_ID = CLIENTE.CLI_ID";
         if (!condicao.equals("")) {
-            sql += " where " + condicao;
+            sql += " AND " + condicao;
         }
         stm = conexao.prepareStatement(sql);
         rs = stm.executeQuery();
         lista = new ArrayList<>();
         while (rs.next()) {
-            ReceberModel objusu = new ReceberModel();
-            objusu.setFINAN_ID(rs.getInt("FINAN_ID"));
-            objusu.setFINAN_NUM(rs.getInt("FINAN_NUM"));
-            objusu.setFINAN_EMISSAO(rs.getString("FINAN_EMISSAO"));
-            objusu.setFINAN_VENC(rs.getString("FINAN_VENC"));
-            objusu.setFINAN_PAG(rs.getString("FINAN_PAG"));
-            objusu.setFINAN_VAL(rs.getDouble("FINAN_VAL"));
-            objusu.setFINAN_JUROS(rs.getDouble("FINAN_JUROS"));
-            objusu.setFINAN_MULTA(rs.getDouble("FINAN_MULTA"));
-            objusu.setFINAN_DESCONTO(rs.getDouble("FINAN_DESCONTO"));
-            objusu.setFINAN_TOTAL(rs.getDouble("FINAN_TOTAL"));
-            objusu.setNOTA_FISCAL(rs.getString("NOTA_FISCAL"));
-            lista.add(objusu);
+            ReceberModel receber = new ReceberModel();
+            ClienteModel cliente = new ClienteModel();
+            receber.setFINAN_ID(rs.getInt("FINAN_ID"));
+            receber.setFINAN_NUM(rs.getInt("FINAN_NUM"));
+            receber.setFINAN_EMISSAO(rs.getString("FINAN_EMISSAO"));
+            receber.setFINAN_VENC(rs.getString("FINAN_VENC"));
+            receber.setFINAN_PAG(rs.getString("FINAN_PAG"));
+            receber.setFINAN_VAL(rs.getDouble("FINAN_VAL"));
+            receber.setFINAN_JUROS(rs.getDouble("FINAN_JUROS"));
+            receber.setFINAN_MULTA(rs.getDouble("FINAN_MULTA"));
+            receber.setFINAN_DESCONTO(rs.getDouble("FINAN_DESCONTO"));
+            receber.setFINAN_TOTAL(rs.getDouble("FINAN_TOTAL"));
+            receber.setNOTA_FISCAL(rs.getString("NOTA_FISCAL"));
+            receber.setCliente(cliente);
+            cliente.setCLI_ID(rs.getInt("CLI_ID"));
+            cliente.setCLI_NOME(rs.getString("CLI_NOME"));
+            lista.add(receber);
         }
         rs.close();
         stm.close();

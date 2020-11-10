@@ -6,7 +6,6 @@
 package View;
 
 import Controller.ClienteController;
-import Controller.EnderecoController;
 import Controller.FornecedorController;
 import Controller.PagarController;
 import Controller.ReceberController;
@@ -18,6 +17,7 @@ import Model.ReceberModel;
 import java.awt.Dimension;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -31,18 +31,16 @@ public class UserView extends javax.swing.JFrame {
 
     private String operacao;
     
-    private String colunasCli[] = {"ID", "Nome", "CPF", "EMAIL","DDD","Telefone"};
-    private String colunasFor[] = {"ID", "Nome","Razão", "CNPJ", "EMAIL","DDD","Telefone"};
-    private String colunasEnde[] = {"Logradouro","Numero", "CEP", "Cidade","Estado"};
+    private String colunasCli[] = {"ID", "Nome", "CPF", "EMAIL","DDD","Telefone","Logradouro","Numero", "CIDADE", "CEP","Estado"};
+    private String colunasFor[] = {"ID", "Nome","Razão", "CNPJ", "EMAIL","DDD","Telefone","Logradouro","Numero", "CIDADE", "CEP","Estado"};
+    private String colunasEnde[] = {"ID","Logradouro","Numero", "CEP", "Cidade","Estado"};
     private String colunasPag[] = {"ID","NUMERO", "DATA DE EMISSÃO", "VENCIMENTO","PAGAMENTO","VALOR","JUROS","MULTA","DESCONTO","TOTAL","BOLETO","Fornecedor"};
-    private String colunasRec[] = {"ID","NUMERO", "DATA DE EMISSÃO", "VENCIMENTO","PAGAMENTO","VALOR","JUROS","MULTA","DESCONTO","TOTAL","NOTA FISCAL"};
+    private String colunasRec[] = {"ID","NUMERO", "DATA DE EMISSÃO", "VENCIMENTO","PAGAMENTO","VALOR","JUROS","MULTA","DESCONTO","TOTAL","NOTA FISCAL","Cliente ID","Cliente Nome"};
+    private String cbEstado[] = {"AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"};
     
     private ArrayList<ClienteModel> listaCli;
     private ClienteTableModel tabelaCli;
-    
-    private ArrayList<EnderecoModel> listaEnde;
-    private EnderecoTableModel tabelaEnde;
-    
+       
     private ArrayList<FornecedorModel> listaFor;
     private FornecedorTableModel tabelaFor;
     
@@ -51,6 +49,7 @@ public class UserView extends javax.swing.JFrame {
     
     private ArrayList<ReceberModel> listaRec;
     private ReceberTableModel tabelaRec;
+    final DefaultComboBoxModel model = new DefaultComboBoxModel(cbEstado);
 
     private String getOperacao() {
         return operacao;
@@ -73,6 +72,8 @@ public class UserView extends javax.swing.JFrame {
         jInternalFrame3.setVisible(false);
         jInternalFrame4.setVisible(false);
         jInternalFrame5.setVisible(false);
+        cbESTADO.setModel(model);
+        cbESTADO1.setModel(model);
         setOperacao(""); 
         setLocationRelativeTo(null);
         consultarFornecedor();
@@ -400,8 +401,6 @@ public class UserView extends javax.swing.JFrame {
 
         lblESTADO.setText("ESTADO:");
 
-        cbESTADO.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         lblCEP.setText("CEP:");
 
         lblNUM.setText("NUMERO:");
@@ -703,8 +702,6 @@ public class UserView extends javax.swing.JFrame {
         lblCEP1.setText("CEP:");
 
         lblENDE1.setText("ENDE_ID");
-
-        cbESTADO1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         lblLOGRA1.setText("LOGRADOURO:");
 
@@ -1331,7 +1328,7 @@ public class UserView extends javax.swing.JFrame {
 
         jLabel3.setText("NOTA FISCAL:");
 
-        jLabel4.setText("FORNECEDOR:");
+        jLabel4.setText("CLIENTE:");
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
@@ -1674,16 +1671,21 @@ public class UserView extends javax.swing.JFrame {
         if (JOptionPane.showConfirmDialog(null, "Confirma Gravação deste Usuário ?",
                 "Confirmação", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
-                EnderecoModel endereco = new EnderecoModel();
-                endereco.setENDERECO_LOGRADOURO(tfLOGRA.getText());
                 ClienteModel objcliente = new ClienteModel();
+                EnderecoModel endereco = new EnderecoModel();
+                objcliente.setEndereco(endereco);
+                endereco.setENDERECO_LOGRADOURO(tfLOGRA.getText());
+                endereco.setENDERECO_NUMERO(Integer.parseInt(tfNUMERO.getText()));
+                endereco.setENDERECO_CEP((tfNUMERO.getText()));
+                endereco.setENDEROCO_CIDADE((tfCIDADE.getText()));
+                endereco.setENDERECO_ESTADO(cbESTADO.getSelectedItem().toString());
                 objcliente.setCLI_ID(Integer.parseInt(tfID.getText()));
                 objcliente.setCLI_NOME(tfNOME.getText());
                 objcliente.setCLI_CPF(tfCPF.getText());
                 objcliente.setCLI_EMAIL(tfEMAIL.getText());
                 objcliente.setCLI_DDD(Integer.parseInt(tfDDD.getText()));
                 objcliente.setCLI_TELEFONE(Integer.parseInt(tfNUMERO.getText()));
-                objcliente.setEndereco(endereco);
+                
                 ClienteController clientecontroller = new ClienteController();
                 clientecontroller.gravar(getOperacao(), objcliente);
 
@@ -1702,12 +1704,20 @@ public class UserView extends javax.swing.JFrame {
                 "Confirmação", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
                 ClienteModel objcliente = new ClienteModel();
+                EnderecoModel endereco = new EnderecoModel();
+                objcliente.setEndereco(endereco);
+                endereco.setENDERECO_LOGRADOURO(tfLOGRA.getText());
+                endereco.setENDERECO_NUMERO(Integer.parseInt(tfNUMERO.getText()));
+                endereco.setENDERECO_CEP((tfNUMERO.getText()));
+                endereco.setENDEROCO_CIDADE((tfCIDADE.getText()));
+                endereco.setENDERECO_ESTADO(cbESTADO.getSelectedItem().toString());
                 objcliente.setCLI_ID(Integer.parseInt(tfID.getText()));
                 objcliente.setCLI_NOME(tfNOME.getText());
                 objcliente.setCLI_CPF(tfCPF.getText());
                 objcliente.setCLI_EMAIL(tfEMAIL.getText());
                 objcliente.setCLI_DDD(Integer.parseInt(tfDDD.getText()));
                 objcliente.setCLI_TELEFONE(Integer.parseInt(tfNUMERO.getText()));
+                
                 ClienteController clientecontroller = new ClienteController();
                 
                 clientecontroller.excluir(objcliente);
@@ -1730,6 +1740,12 @@ public class UserView extends javax.swing.JFrame {
                 "Confirmação", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
                 FornecedorModel objfornecedor = new FornecedorModel();
+                EnderecoModel endereco = new EnderecoModel();
+                endereco.setENDERECO_LOGRADOURO(tfLOGRA1.getText());
+                endereco.setENDERECO_NUMERO(Integer.parseInt(tfNUMERO1.getText()));
+                endereco.setENDERECO_CEP((tfNUMERO1.getText()));
+                endereco.setENDEROCO_CIDADE((tfCIDADE1.getText()));
+                endereco.setENDERECO_ESTADO(cbESTADO1.getSelectedItem().toString());
                 objfornecedor.setFOR_ID(Integer.parseInt(tfID1.getText()));
                 objfornecedor.setFOR_NOME(tfNOME1.getText());
                 objfornecedor.setFOR_CNPJ(tfCPF1.getText());
@@ -1737,6 +1753,7 @@ public class UserView extends javax.swing.JFrame {
                 objfornecedor.setFOR_EMAIL(tfEMAIL1.getText());
                 objfornecedor.setFOR_DDD(Integer.parseInt(tfDDD1.getText()));
                 objfornecedor.setFOR_NUMERO(Integer.parseInt(tfNUMERO1.getText()));
+                objfornecedor.setEndereco(endereco);
                 FornecedorController fornecedorcontroller = new FornecedorController();
                 
                 fornecedorcontroller.excluir(objfornecedor);
@@ -1760,6 +1777,12 @@ public class UserView extends javax.swing.JFrame {
                 "Confirmação", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             try {
                 FornecedorModel objfornecedor = new FornecedorModel();
+                EnderecoModel endereco = new EnderecoModel();
+                endereco.setENDERECO_LOGRADOURO(tfLOGRA1.getText());
+                endereco.setENDERECO_NUMERO(Integer.parseInt(tfNUMERO1.getText()));
+                endereco.setENDERECO_CEP((tfNUMERO1.getText()));
+                endereco.setENDEROCO_CIDADE((tfCIDADE1.getText()));
+                endereco.setENDERECO_ESTADO(cbESTADO1.getSelectedItem().toString());
                 objfornecedor.setFOR_ID(Integer.parseInt(tfID1.getText()));
                 objfornecedor.setFOR_NOME(tfNOME1.getText());
                 objfornecedor.setFOR_CNPJ(tfCPF1.getText());
@@ -1768,7 +1791,7 @@ public class UserView extends javax.swing.JFrame {
                 objfornecedor.setFOR_DDD(Integer.parseInt(tfDDD1.getText()));
                 objfornecedor.setFOR_NUMERO(Integer.parseInt(tfNUMERO1.getText()));
                 FornecedorController fornecedorcontroller = new FornecedorController();
-                
+                objfornecedor.setEndereco(endereco);
                 fornecedorcontroller.gravar(getOperacao(),objfornecedor);
 
                 JOptionPane.showMessageDialog(null, "Registro Gravado com Sucesso");
@@ -2016,31 +2039,31 @@ public class UserView extends javax.swing.JFrame {
     private String filtroConsultaCliente() {
         String condicao = "";
         if (!tfID2.getText().trim().equals("")) {
-            condicao += "(CLI_ID >= " + tfID2.getText() + ")";
+            condicao += "(CLIENTE.CLI_ID >= " + tfID2.getText() + ")";
         }
         if (!tfID3.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "(CLI_ID <= " + tfID3.getText() + ")";
+            condicao += "(CLIENTE.CLI_ID <= " + tfID3.getText() + ")";
         }
         if (!tfNOME2.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "( upper(CLI_NOME) LIKE ('%" + tfNOME2.getText().toUpperCase() + "%'))";
+            condicao += "( upper(CLIENTE.CLI_NOME) LIKE ('%" + tfNOME2.getText().toUpperCase() + "%'))";
         }
         if (!tfCPF2.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "( upper(CLI_CPF) LIKE ('%" + tfCPF2.getText().toUpperCase() + "%'))";
+            condicao += "( upper(CLIENTE.CLI_CPF) LIKE ('%" + tfCPF2.getText().toUpperCase() + "%'))";
         }
         if (!tfEMAIL2.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "( upper(CLI_EMAIL) LIKE ('%" + tfEMAIL2.getText().toUpperCase() + "%'))";
+            condicao += "( upper(CLIENTE.CLI_EMAIL) LIKE ('%" + tfEMAIL2.getText().toUpperCase() + "%'))";
         }
         return condicao;
     }
@@ -2048,37 +2071,37 @@ public class UserView extends javax.swing.JFrame {
     private String filtroConsultaFornecedor() {
         String condicao = "";
         if (!tfID5.getText().trim().equals("")) {
-            condicao += "(FOR_ID >= " + tfID5.getText() + ")";
+            condicao += "(FORNECEDOR.FOR_ID >= " + tfID5.getText() + ")";
         }
         if (!tfID4.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "(FOR_ID <= " + tfID4.getText() + ")";
+            condicao += "(FORNECEDOR.FOR_ID <= " + tfID4.getText() + ")";
         }
         if (!tfNOME3.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "( upper(FOR_NOME) LIKE ('%" + tfNOME3.getText().toUpperCase() + "%'))";
+            condicao += "( upper(FORNECEDOR.FOR_NOME) LIKE ('%" + tfNOME3.getText().toUpperCase() + "%'))";
         }
         if (!tfCPF3.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "( upper(FOR_CNPJ) LIKE ('%" + tfCPF3.getText().toUpperCase() + "%'))";
+            condicao += "( upper(FORNECEDOR.FOR_CNPJ) LIKE ('%" + tfCPF3.getText().toUpperCase() + "%'))";
         }
         if (!tfEMAIL3.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "( upper(FOR_EMAIL) LIKE ('%" + tfEMAIL3.getText().toUpperCase() + "%'))";
+            condicao += "( upper(FORNECEDOR.FOR_EMAIL) LIKE ('%" + tfEMAIL3.getText().toUpperCase() + "%'))";
         }
         if (!tfRAZAO.getText().trim().equals("")) {
             if (!condicao.isEmpty()) {
                 condicao += " AND ";
             }
-            condicao += "( upper(FOR_RAZAO) LIKE ('%" + tfRAZAO.getText().toUpperCase() + "%'))";
+            condicao += "( upper(FORNECEDOR.FOR_RAZAO) LIKE ('%" + tfRAZAO.getText().toUpperCase() + "%'))";
         }
         return condicao;
     }
@@ -2129,6 +2152,7 @@ public class UserView extends javax.swing.JFrame {
             ClienteController clientecontroller = new ClienteController();
             listaCli = null;
             listaCli = clientecontroller.consultar(condicao);
+            
             if (listaCli.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Não Existem Clientes Cadastrados !");
             } else {
@@ -2192,13 +2216,21 @@ public class UserView extends javax.swing.JFrame {
         }
     }
     
-    private void mostrarCliente(ClienteModel usuario) {
-        tfID.setText(String.valueOf(usuario.getCLI_ID()));
-        tfNOME.setText(usuario.getCLI_NOME());
-        tfCPF.setText(usuario.getCLI_CPF());
-        tfEMAIL.setText(usuario.getCLI_EMAIL());
-        tfDDD.setText(String.valueOf(usuario.getCLI_DDD()));
-        tfNUMERO.setText(String.valueOf(usuario.getCLI_TELEFONE()));
+    private void mostrarCliente(ClienteModel cliente) {
+        tfID.setText(String.valueOf(cliente.getCLI_ID()));
+        tfNOME.setText(cliente.getCLI_NOME());
+        tfCPF.setText(cliente.getCLI_CPF());
+        tfEMAIL.setText(cliente.getCLI_EMAIL());
+        tfDDD.setText(String.valueOf(cliente.getCLI_DDD()));
+        tfNUMERO.setText(String.valueOf(cliente.getCLI_TELEFONE()));
+        tfENDE.setText(String.valueOf(cliente.getEndereco().getENDERECO_ID()));
+        tfLOGRA.setText(cliente.getEndereco().getENDERECO_LOGRADOURO());
+        tfNUM.setText(String.valueOf(cliente.getEndereco().getENDERECO_NUMERO()));
+        tfCEP.setText(String.valueOf(cliente.getEndereco().getENDERECO_CEP()));
+        tfCIDADE.setText(String.valueOf(cliente.getEndereco().getENDEROCO_CIDADE()));
+        cbESTADO.setSelectedItem(cliente.getEndereco().getENDERECO_ESTADO());
+        
+        
     }
     private void mostrarFornecedor(FornecedorModel fornecedor) {
         tfID1.setText(String.valueOf(fornecedor.getFOR_ID()));
@@ -2208,6 +2240,12 @@ public class UserView extends javax.swing.JFrame {
         tfEMAIL1.setText(fornecedor.getFOR_EMAIL());
         tfDDD1.setText(String.valueOf(fornecedor.getFOR_DDD()));
         tfNUMERO1.setText(String.valueOf(fornecedor.getFOR_NUMERO()));
+        tfENDE1.setText(String.valueOf(fornecedor.getEndereco().getENDERECO_ID()));
+        tfLOGRA1.setText(fornecedor.getEndereco().getENDERECO_LOGRADOURO());
+        tfNUM1.setText(String.valueOf(fornecedor.getEndereco().getENDERECO_NUMERO()));
+        tfCEP1.setText(String.valueOf(fornecedor.getEndereco().getENDERECO_CEP()));
+        tfCIDADE1.setText(String.valueOf(fornecedor.getEndereco().getENDEROCO_CIDADE()));
+        cbESTADO1.setSelectedItem(fornecedor.getEndereco().getENDERECO_ESTADO());
     }
     private void mostrarPagar(PagarModel pagar) {
         tfIDBOLETO.setText(String.valueOf(pagar.getFINAN_ID()));
@@ -2235,6 +2273,7 @@ public class UserView extends javax.swing.JFrame {
         tfDESCONTOBOLETO1.setText(String.valueOf(receber.getFINAN_DESCONTO()));
         tfTOTALBOLETO1.setText(String.valueOf(receber.getFINAN_TOTAL()));
         tfBOLETO1.setText(receber.getNOTA_FISCAL());
+        tfFORNECEDORBOLETO1.setText(receber.getCliente().getCLI_NOME());
     }
     
 

@@ -49,7 +49,17 @@ public class FornecedorTableModel extends AbstractTableModel {
             case 5:
                 return fornecedor.getFOR_DDD();  
             case 6:
-                return fornecedor.getFOR_NUMERO();    
+                return fornecedor.getFOR_NUMERO();
+            case 7:
+                return fornecedor.getEndereco().getENDERECO_LOGRADOURO();    
+                case 8:
+                return fornecedor.getEndereco().getENDERECO_NUMERO();   
+                case 9:
+                return fornecedor.getEndereco().getENDEROCO_CIDADE(); 
+                case 10:
+                return fornecedor.getEndereco().getENDERECO_CEP();
+                case 11:
+                return fornecedor.getEndereco().getENDERECO_ESTADO();    
             default:
                 return null;
         }

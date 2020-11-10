@@ -1,26 +1,16 @@
 package Principal;
-import Conexao.Conexao;
-import View.UserView;
 
-
+import View.LoginView;
 
 public class Main {
-    
-    Conexao objconexao;
-    UserView usuarioview;
-        
 
     public Main() {
-        objconexao = new Conexao();
-        usuarioview = new UserView();
-        
-    }
-
-    public static void main(String[] args) {
-        
         java.awt.EventQueue.invokeLater(() -> {
             new LoginView().setVisible(true);
         });
+    }
+
+    public static void main(String[] args) {
         Main main = new Main();
     }
 
